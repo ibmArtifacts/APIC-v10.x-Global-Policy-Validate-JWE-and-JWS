@@ -1,0 +1,53 @@
+global-policy: 1.0.0
+info:
+  name: jwe-jws-global-policy
+  title: jwe-jws-global-policy
+  version: 1.0.0
+  mode: before-builtin
+gateways:
+  - datapower-api-gateway
+assembly:
+  execute:
+    - cors:
+        version: 2.0.0
+        title: cors-in-preflow
+    - jwt-validate:
+        version: 2.0.0
+        title: jwt-validate
+        description: Validate JWE + JWS (cst external)
+        jwt: request.headers.authorization
+        output-claims: decoded.claims
+        aud-claim: ''
+        iss-claim: ''
+        jwe-crypto: crypto_key_cst_jwtdecrypt
+        jws-jwk: ''
+        jws-crypto: crypto_cert_cst_jwtsigverify
+        jwe-jwk: ''
+    - gatewayscript:
+        version: 2.0.0
+        title: gatewayscript
+        source: >-
+          console.log('****Decode.claim: ' + JSON.stringify(context.get('decoded.claims')));
+          context.set('request.headers.client_id', context.get('decoded.claims').client_id);
+          console.log('****client_id request header: ' + JSON.stringify(context.get('decoded.claims').client_id));
+    - client-identification:
+        version: 2.0.0
+        title: ci-in-preflow
+  catch:
+    - errors:
+        - runtimeError
+      execute:
+        - gatewayscript:
+            version: 2.0.0
+            title: gatewayscript
+            source: |
+              var jwtError = context.get('jwt-validate.error-message');
+
+              // Set the response payload
+              context.message.body.write({
+                  "error": "Unauthorized",
+                  "message": jwtError
+              });
+
+              context.message.statusCode = 401;
+              context.message.header.set('Content-Type', 'application/json');
