@@ -14,7 +14,7 @@ assembly:
     - jwt-validate:
         version: 2.0.0
         title: jwt-validate
-        description: Validate JWE + JWS (cst external)
+        description: Validate JWE + JWS
         jwt: request.headers.authorization
         output-claims: decoded.claims
         aud-claim: ''
