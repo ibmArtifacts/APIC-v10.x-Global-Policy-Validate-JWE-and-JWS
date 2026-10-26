@@ -19,9 +19,9 @@ assembly:
         output-claims: decoded.claims
         aud-claim: ''
         iss-claim: ''
-        jwe-crypto: crypto_key_cst_jwtdecrypt
+        jwe-crypto: INPUT_CRYPTO_KEY_OBJECT_NAME_SET_ON_DATAPOWER_FOR_JWTDECRYPT_HERE
         jws-jwk: ''
-        jws-crypto: crypto_cert_cst_jwtsigverify
+        jws-crypto: INPUT_CRYPTO_CERT_OBJECT_NAME_SET_ON_DATAPOWER_FOR_JWTSIGNVERIFY_HERE
         jwe-jwk: ''
     - gatewayscript:
         version: 2.0.0
